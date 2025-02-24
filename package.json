@@ -1,0 +1,39 @@
+{
+  "name": "vlg-package-import",
+  "version": "1.0.0",
+  "description": "Import module for excel files",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.10",
+    "@nestjs/core": "^11.0.10",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vlgteam/package-import.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "keywords": [
+    "nestjs",
+    "import",
+    "excel"
+  ],
+  "author": {
+    "name": "minh.dc"
+  },
+  "license": "MIT"
+}

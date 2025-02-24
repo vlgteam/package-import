@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "vlg-import": {
+      "type": "library",
+      "root": "libs/vlg-import",
+      "entryFile": "index",
+      "sourceRoot": "libs/vlg-import/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/vlg-import/tsconfig.lib.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "webpack": true
+  }
+}
