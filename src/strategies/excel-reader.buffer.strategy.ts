@@ -1,6 +1,6 @@
 import * as ExcelJS from "exceljs";
 import { Readable } from "stream";
-import { BufferFileStrategyParam } from "../types";
+import { BufferFileStrategyParam, ImportException } from "../types";
 import { ExcelReaderInterface } from "./excel-reader.interface";
 
 export class ExcelReaderBufferStrategy extends ExcelReaderInterface {
@@ -13,7 +13,9 @@ export class ExcelReaderBufferStrategy extends ExcelReaderInterface {
     );
 
     if (sheet == null) {
-      throw new Error(`Sheet ${config.sheet} not found`);
+      throw new ImportException([
+        { message: `Sheet ${config.sheet} not found` },
+      ]);
     }
 
     let rowCursorIndex = 2;
@@ -21,7 +23,7 @@ export class ExcelReaderBufferStrategy extends ExcelReaderInterface {
     const headers: string[] = [];
 
     sheet.getRow(1).eachCell((cell: any) => {
-      headers.push(typeof cell === "object" ? cell.text : String(cell));
+      headers.push(cell.text);
     });
 
     return new Readable({
@@ -33,7 +35,10 @@ export class ExcelReaderBufferStrategy extends ExcelReaderInterface {
         }
 
         if (size <= 0) {
-          throw new Error("Size must be greater than 0");
+          this.emit(
+            "error",
+            new ImportException([{ message: "Size must be greater than 0" }])
+          );
         }
 
         const rows = (sheet.getRows(rowCursorIndex, size) || []).filter(
@@ -48,7 +53,9 @@ export class ExcelReaderBufferStrategy extends ExcelReaderInterface {
         }
         const result: Array<Record<string, any>> = [];
         for (const row of rows || []) {
-          const record: Record<string, any> = {};
+          const record: Record<string, any> = {
+            row: row.number,
+          };
 
           row.eachCell((cell: any, colNumber: number) => {
             record[headers[colNumber - 1]] = cell.text;

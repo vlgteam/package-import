@@ -5,7 +5,7 @@ import {
   __VLG_IMPORT_PROPERTY_DECORATOR__,
   SEPARATOR,
 } from "../constants";
-import { ClsType, PropertyMetadataType } from "../types";
+import { ClsType, ImportException, PropertyMetadataType } from "../types";
 import { PrimitivePropertyMetadataType } from "../types/primitive-property.metadata.type";
 import deepcopy = require("deepcopy");
 
@@ -28,7 +28,7 @@ export class VlgImportMapper {
       metadata.type !== Boolean &&
       metadata.type != null
     ) {
-      throw new Error("Type is not allowed");
+      throw new ImportException([{ message: "Type is not allowed" }]);
     }
 
     if (data[metadata.name as string] == null) {

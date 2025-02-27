@@ -7,7 +7,7 @@ import { BufferFileStrategyParam, VlgImportOptions } from "../types";
 import { VlgImportModule } from "../vlg-import.module";
 import { MockModule, ProcessorMockService } from "./__mocks__";
 
-describe("VlgImportService", () => {
+describe("ExcelReaderBufferStrategy", () => {
   let importService: VlgImportService;
   let mockProcessor: ProcessorMockService;
   let buffer = Buffer.from(fs.readFileSync(__dirname + "/__dumps__/test.xlsm"));
@@ -40,8 +40,8 @@ describe("VlgImportService", () => {
     mockProcessor = moduleRef.get(ProcessorMockService);
   });
 
-  it("should be defined", async () => {
-    await importService.import<BufferFileStrategyParam>({
+  it("onSave", async () => {
+    const result = await importService.import<BufferFileStrategyParam>({
       strategyParams: {
         sheet: "TEST",
         buffer,
@@ -52,5 +52,35 @@ describe("VlgImportService", () => {
     expect(mockProcessor?.result.length).toBe(1);
     expect(mockProcessor?.result[0].name).toBe("name test");
     expect(mockProcessor?.result[0].projectProgressId).toBe(12);
+    expect(mockProcessor?.onSaveContext.rows).not.toBeUndefined();
+    expect(result).toBeTruthy();
+  });
+
+  it("onSuccess", async () => {
+    const result = await importService.import<BufferFileStrategyParam>({
+      strategyParams: {
+        sheet: "TEST",
+        buffer,
+      },
+      outputClass: Record,
+    });
+
+    expect(mockProcessor?.onSuccessContext.originalData).not.toBeUndefined();
+    expect(mockProcessor?.onSuccessContext.rows).not.toBeUndefined();
+    expect(mockProcessor?.onSucessCall).toBeTruthy();
+    expect(result).toBeTruthy();
+  });
+
+  it("onError", async () => {
+    const result = await importService.import<BufferFileStrategyParam>({
+      strategyParams: {
+        sheet: "ABC",
+        buffer,
+      },
+      outputClass: Record,
+    });
+
+    expect(mockProcessor?.onErrorCall).toBeTruthy();
+    expect(result).toBeFalsy();
   });
 });
