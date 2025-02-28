@@ -5,3 +5,4 @@ export * from "./error.type";
 export * from "./primitive-property.metadata.type";
 export * from "./property.metadata.type";
 export * from "./vlg-import.options";
+export * from './transform.metadata.type';

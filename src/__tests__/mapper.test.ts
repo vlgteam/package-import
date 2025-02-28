@@ -1,4 +1,4 @@
-import { Property } from "../decorators";
+import { Property, PropertyTransform } from "../decorators";
 import { PrimitiveProperty } from "../decorators/primitive-property.decorator";
 import { VlgImportMapper } from "../services";
 
@@ -221,6 +221,31 @@ describe("MapperService", () => {
       const result = mapper.parse(data, A);
       expect(result.b).not.toBeNull();
       expect(result.b?.test1).toBe(true);
+    });
+  });
+
+  describe("Transform", () => {
+    it("Nested type", async () => {
+      const data = {
+        "test-1": "02/15",
+      };
+
+      class B {
+        @PrimitiveProperty({ type: Date, name: "test-1" })
+        @PropertyTransform({ transform: (value: string) => "2022/" + value })
+        test1?: Date;
+      }
+
+      class A {
+        @Property({ type: B })
+        b?: B;
+      }
+
+      const result = mapper.parse(data, A);
+      expect(result.b).not.toBeNull();
+      expect(result.b?.test1?.getTime()).toEqual(
+        new Date("2022/02/15").getTime()
+      );
     });
   });
 });
