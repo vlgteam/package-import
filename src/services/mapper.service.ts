@@ -3,9 +3,15 @@ import "reflect-metadata";
 import {
   __VLG_IMPORT_PRIMITIVE_PROPERTY_DECORATOR__,
   __VLG_IMPORT_PROPERTY_DECORATOR__,
+  __VLG_TRANSFORM_DECORATOR__,
   SEPARATOR,
 } from "../constants";
-import { ClsType, ImportException, PropertyMetadataType } from "../types";
+import {
+  ClsType,
+  ImportException,
+  PropertyMetadataType,
+  TransformMetadataType,
+} from "../types";
 import { PrimitivePropertyMetadataType } from "../types/primitive-property.metadata.type";
 import deepcopy = require("deepcopy");
 
@@ -80,10 +86,19 @@ export class VlgImportMapper {
 
     for (const property of properties) {
       const [propertyType, propertyInstance] = property.split(SEPARATOR);
+      const transformPropertyKey = `${__VLG_TRANSFORM_DECORATOR__}${SEPARATOR}${propertyInstance}`;
 
       if (propertyType === __VLG_IMPORT_PRIMITIVE_PROPERTY_DECORATOR__) {
         const metadata: PrimitivePropertyMetadataType =
           cls[property as keyof typeof cls];
+
+        const transform: TransformMetadataType =
+          cls[transformPropertyKey as keyof typeof cls];
+
+        if (transform != null && transform.transform != null) {
+          data[metadata.name] = transform.transform(data[metadata.name]);
+        }
+
         instance[propertyInstance as keyof typeof instance] =
           this._transformPrimitiveProperty(data, metadata) as any;
       } else if (propertyType === __VLG_IMPORT_PROPERTY_DECORATOR__) {
