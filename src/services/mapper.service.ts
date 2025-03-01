@@ -32,6 +32,7 @@ export class VlgImportMapper {
       metadata.type !== Date &&
       metadata.type !== Number &&
       metadata.type !== Boolean &&
+      metadata.type !== String &&
       metadata.type != null
     ) {
       throw new ImportException([{ message: "Type is not allowed" }]);
@@ -50,18 +51,21 @@ export class VlgImportMapper {
     if (metadata.type === Date) {
       return isArray
         ? data[metadata.name as string]
+            .toString()
             .split(metadata.separator as string)
-            .map((value: any) => new Date(value))
-        : new Date(data[metadata.name as string]);
+            .map((value: any) => new Date(value.trim()))
+        : new Date(data[metadata.name as string].toString().trim());
     } else if (metadata.type === Number) {
       return isArray
         ? data[metadata.name as string]
+            .toString()
             .split(metadata.separator as string)
-            .map((value: any) => Number(value))
-        : Number(data[metadata.name as string]);
+            .map((value: any) => Number(value.trim()))
+        : Number(data[metadata.name as string].toString().trim());
     } else if (metadata.type === Boolean) {
       return isArray
         ? data[metadata.name as string]
+            .toString()
             .split(metadata.separator as string)
             .map(
               (value: any) =>
@@ -71,6 +75,12 @@ export class VlgImportMapper {
         : data[metadata.name as string].toString().trim().toLowerCase() ===
             "true" || data[metadata.name as string].toString().trim() === "1";
     } else {
+      return isArray
+        ? data[metadata.name as string]
+            .toString()
+            .split(metadata.separator as string)
+            .map((value: any) => value.trim())
+        : data[metadata.name as string].toString().trim();
     }
   }
 
