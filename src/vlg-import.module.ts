@@ -22,6 +22,6 @@ import { VlgImportOptions } from "./types";
       inject: [MODULE_OPTIONS_TOKEN],
     },
   ],
+  exports: [VlgImportService],
 })
 export class VlgImportModule extends ConfigurableModuleClass {}
-
