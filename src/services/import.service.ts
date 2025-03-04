@@ -36,6 +36,8 @@ export class VlgImportService {
     }
   }
 
+
+
   import<T extends AbstractStrategyParam>(
     params: ImportServiceParam<T>,
     context: Record<string, any> = {}
@@ -47,7 +49,9 @@ export class VlgImportService {
         );
 
         let isError = false;
-        readableStream.on("data", async (chunk) => {
+        const promises: any[] = [];
+
+        const onDataFunc = async (chunk: any) => {
           let entities;
           try {
             entities = chunk.map((item: any) =>
@@ -71,9 +75,16 @@ export class VlgImportService {
               { ...context, rows: chunk }
             );
           }
+        }
+
+        readableStream.on("data", async (chunk) => {
+          const call = onDataFunc(chunk);
+          promises.push(call);
+          await call;
         });
 
-        readableStream.on("end", () => {
+        readableStream.on("end", async () => {
+          await Promise.allSettled<any>(promises);
           return resolve(!isError);
         });
 
