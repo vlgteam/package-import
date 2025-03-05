@@ -23,7 +23,7 @@ export class ExcelReaderBufferStrategy extends ExcelReaderInterface {
     const headers: string[] = [];
 
     sheet.getRow(1).eachCell((cell: any) => {
-      headers.push(cell.text);
+      headers.push(cell.text.toString().trim());
     });
 
     return new Readable({

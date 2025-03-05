@@ -101,6 +101,8 @@ export class VlgImportMapper {
       if (propertyType === __VLG_IMPORT_PRIMITIVE_PROPERTY_DECORATOR__) {
         const metadata: PrimitivePropertyMetadataType =
           cls[property as keyof typeof cls];
+          // Trim header string
+        metadata.name = metadata.name.trim();
 
         const transform: TransformMetadataType =
           cls[transformPropertyKey as keyof typeof cls];
