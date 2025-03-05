@@ -46,7 +46,7 @@ export class ExcelReaderAxiosStrategy extends ExcelReaderInterface {
 
       for await (const row of worksheet) {
         if (rowCursorIndex === 1) {
-          row.eachCell((cell: any) => headers.push(cell.text));
+          row.eachCell((cell: any) => headers.push(cell.text.toString().trim()));
           rowCursorIndex = rowCursorIndex + 1;
           continue;
         }
